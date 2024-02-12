@@ -29,7 +29,9 @@ bool isNumber(const std::string& str);
 Parameters readInput(int argc, char *argv[]);
 
 
-std::vector<std::string> readInputFile(const std::string& inputFileName, std::vector<std::vector<float>>& attributeValues);
+void readInputFile(const std::string& inputFileName, std::vector<std::vector<float>>& attributeValues);
 
 
 std::vector<Definition> readDefinition(const std::string& inputFileName);
+
+void runDecisionTree();

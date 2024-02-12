@@ -2,11 +2,11 @@
     "cmake.debugConfig": {
         "args": [
             "-i",
-            "C:\\Users\\tymka\\Desktop\\Studia\\DecisionTreee\\input.txt",
+            "F:\\VSCode\\Decision-Tree\\input.txt",
             "-t",
-            "C:\\Users\\tymka\\Desktop\\Studia\\DecisionTreee\\treeDef.txt",
+            "F:\\VSCode\\Decision-Tree\\treeDef.txt",
             "-o",
-            "C:\\Users\\tymka\\Desktop\\Studia\\DecisionTreee\\output.txt"
+            "F:\\VSCode\\Decision-Tree\\output.txt"
         ]
     },
     

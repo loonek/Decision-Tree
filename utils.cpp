@@ -68,7 +68,7 @@ Parameters readInput(int argc, char *argv[])
     return p;
 }
 
-std::vector<std::string> readInputFile(const std::string& inputFileName, std::vector<std::vector<float>>& attributeValues)
+void readInputFile(const std::string& inputFileName, std::vector<std::vector<float>>& attributeValues)
 {
     std::ifstream inputFile(inputFileName);
 
@@ -78,22 +78,22 @@ std::vector<std::string> readInputFile(const std::string& inputFileName, std::ve
         exit(EXIT_FAILURE);
     }
 
+    int n = 0;
     std::vector<std::string> attributes;
     std::string line;
 
     if(std::getline(inputFile, line))
     {
         std::istringstream iss(line);
-        std::string attributeName;
+        std::string value;
 
-        while(iss >> attributeName)
+        while(iss >> value)
         {
-            if(attributeName == "%") break;
-            attributes.push_back(attributeName);        
+            if(value == "%") break;
+            n++;        
         }
     }
 
-    int n = attributes.size();
     int r = 0, c = 0;
 
     while(std::getline(inputFile, line))
@@ -129,7 +129,6 @@ std::vector<std::string> readInputFile(const std::string& inputFileName, std::ve
     }
 
     inputFile.close();
-    return attributes;
 }
 
 std::vector<Definition> readDefinition(const std::string& inputFileName)
@@ -231,4 +230,9 @@ std::vector<Definition> readDefinition(const std::string& inputFileName)
         }
     }
     return nodes;
+}
+
+void runDecisionTree(const std::vector<Definition>& nodes)
+{
+
 }
