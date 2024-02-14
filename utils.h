@@ -1,7 +1,11 @@
+#pragma once
+
 #include <string>
 #include <vector>
 #include <sstream>
 #include <fstream>
+#include <map>
+#include <utility>
 
 struct Parameters
 {
@@ -22,12 +26,6 @@ struct Definition
     int falseIndex;
 };
 
-struct NiggaBalls
-{
-    std::vector<float> attributes;
-    std::string decision;
-};
-
 
 bool isNumber(const std::string& str);
 
@@ -35,13 +33,13 @@ bool isNumber(const std::string& str);
 Parameters readInput(int argc, char *argv[]);
 
 
-std::vector<NiggaBalls> readInputFile(const std::string& inputFileName);
+std::vector<std::vector<float>> readInputFile(const std::string& inputFileName);
 
 
-std::vector<Definition> readDefinition(const std::string& inputFileName);
+std::vector<Definition> readDefinition(const std::string& inputFileName, std::map<std::string, std::vector<std::vector<float>>>& sortedNiggas);
 
 
-void runDecisionTree(const std::vector<Definition>& nodes, std::vector<NiggaBalls>& niggas);
+void runDecisionTree(const std::vector<Definition>& nodes, const std::vector<std::vector<float>>& niggas, std::map<std::string, std::vector<std::vector<float>>>& sortedNiggas);
 
 
-void printResults(const std::string& outputFileName, const std::vector<NiggaBalls>& niggas);
+void printResults(const std::string& outputFileName, std::map<std::string, std::vector<std::vector<float>>>& sortedNiggas);

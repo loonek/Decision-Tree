@@ -68,7 +68,7 @@ Parameters readInput(int argc, char *argv[])
     return p;
 }
 
-std::vector<NiggaBalls> readInputFile(const std::string& inputFileName)
+std::vector<std::vector<float>> readInputFile(const std::string& inputFileName)
 {
     std::ifstream inputFile(inputFileName);
 
@@ -94,13 +94,13 @@ std::vector<NiggaBalls> readInputFile(const std::string& inputFileName)
     }
 
     
-    std::vector<NiggaBalls> niggas;
+    std::vector<std::vector<float>> niggas;
     int r = 0, c = 0;
 
     while(std::getline(inputFile, line))
     {
         std::istringstream iss(line);
-        NiggaBalls niggaBall;
+        std::vector<float> dolgorapojebanaamplituda;
         std::string value;
         while (iss >> value)
         {
@@ -112,7 +112,7 @@ std::vector<NiggaBalls> readInputFile(const std::string& inputFileName)
             }
             if(isNumber(value))
             {
-                niggaBall.attributes.push_back(std::stof(value));
+                dolgorapojebanaamplituda.push_back(std::stof(value));
             }
             else
             {
@@ -126,14 +126,14 @@ std::vector<NiggaBalls> readInputFile(const std::string& inputFileName)
         }
 
         c = 0;
-        niggas.push_back(niggaBall);
+        niggas.push_back(dolgorapojebanaamplituda);
     }
 
     inputFile.close();
     return niggas;
 }
 
-std::vector<Definition> readDefinition(const std::string& inputFileName)
+std::vector<Definition> readDefinition(const std::string& inputFileName, std::map<std::string, std::vector<std::vector<float>>>& sortedNiggas)
 {
     std::ifstream inputFile(inputFileName);
 
@@ -203,6 +203,7 @@ std::vector<Definition> readDefinition(const std::string& inputFileName)
             }
             else
             {
+                sortedNiggas.emplace(value, std::vector<std::vector<float>>{});
                 node.falseLabel = value;
                 node.falseIndex = -1;
                 count++;
@@ -217,6 +218,7 @@ std::vector<Definition> readDefinition(const std::string& inputFileName)
             }
             else
             {
+                sortedNiggas.emplace(value, std::vector<std::vector<float>>{});
                 node.trueLabel = value;
                 node.trueIndex = -1;
                 count++;
@@ -234,21 +236,22 @@ std::vector<Definition> readDefinition(const std::string& inputFileName)
     return nodes;
 }
 
-void runDecisionTree(const std::vector<Definition>& nodes, std::vector<NiggaBalls>& niggas)
+void runDecisionTree(const std::vector<Definition>& nodes, const std::vector<std::vector<float>>& niggas, std::map<std::string, std::vector<std::vector<float>>>& sortedNiggas) 
 {
     for(int i = 0; i < niggas.size(); i++)
     {
         int n = 0;
-
-        while(niggas[i].decision.empty())
+        
+        while(true)
         {
             if(nodes[n].op == '<')
             {
-                if(niggas[i].attributes[n] < nodes[n].value)
-                {
+                if(niggas[i][n] > nodes[n].value)
+                    {
                     if(nodes[n].trueIndex == -1)
                     {
-                        niggas[i].decision = nodes[n].trueLabel;
+                        sortedNiggas[nodes[n].trueLabel].push_back(niggas[i]);
+                        break;
                     }
                     else
                     {
@@ -259,7 +262,8 @@ void runDecisionTree(const std::vector<Definition>& nodes, std::vector<NiggaBall
                 {
                     if(nodes[n].falseIndex == -1)
                     {
-                        niggas[i].decision = nodes[n].falseLabel;
+                        sortedNiggas[nodes[n].falseLabel].push_back(niggas[i]);
+                        break;
                     }
                     else
                     {
@@ -269,11 +273,12 @@ void runDecisionTree(const std::vector<Definition>& nodes, std::vector<NiggaBall
             }
             else
             {
-                if(niggas[i].attributes[n] > nodes[n].value)
+                if(niggas[i][n] < nodes[n].value)
                 {
                     if(nodes[n].trueIndex == -1)
                     {
-                        niggas[i].decision = nodes[n].trueLabel;
+                        sortedNiggas[nodes[n].trueLabel].push_back(niggas[i]);
+                        break;
                     }
                     else
                     {
@@ -284,7 +289,8 @@ void runDecisionTree(const std::vector<Definition>& nodes, std::vector<NiggaBall
                 {
                     if(nodes[n].falseIndex == -1)
                     {
-                        niggas[i].decision = nodes[n].falseLabel;
+                        sortedNiggas[nodes[n].falseLabel].push_back(niggas[i]);
+                        break;
                     }
                     else
                     {
@@ -296,16 +302,31 @@ void runDecisionTree(const std::vector<Definition>& nodes, std::vector<NiggaBall
     }
 }
 
-void printResults(const std::string& outputFileName, const std::vector<NiggaBalls>& niggas)
+void printResults(const std::string& outputFileName, std::map<std::string, std::vector<std::vector<float>>>& sortedNiggas)
 {
     std::ofstream outputFile(outputFileName);
 
-    for(int i = 0; i < niggas.size(); i++)
+    while(!sortedNiggas.empty())
     {
-        for(int j = 0; j < niggas[i].attributes.size(); j++)
+        std::string decision = sortedNiggas.begin()->first;
+        outputFile << decision << ":\n";
+
+        for(const auto& nigga : sortedNiggas)
         {
-            outputFile << niggas[i].attributes[j] << ", ";
+            if(nigga.first == decision)
+            {
+                for(int i = 0; i < nigga.second.size(); i++)
+                {  
+                    for(int j = 0; j < nigga.second[i].size(); j++)
+                    {
+                        outputFile << nigga.second[i][j] << " ";
+                    }
+                    outputFile << "\n";
+                }
+                outputFile << "\n";
+            }
         }
-        outputFile << " = "<< niggas[i].decision << "\n";
+
+        sortedNiggas.erase(decision);
     }
 }
