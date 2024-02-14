@@ -68,7 +68,7 @@ Parameters readInput(int argc, char *argv[])
     return p;
 }
 
-std::vector<std::vector<std::string>> readInputFile(const std::string& inputFileName, std::vector<std::vector<float>>& attributeValues)
+std::vector<NiggaBalls> readInputFile(const std::string& inputFileName)
 {
     std::ifstream inputFile(inputFileName);
 
@@ -78,7 +78,7 @@ std::vector<std::vector<std::string>> readInputFile(const std::string& inputFile
         exit(EXIT_FAILURE);
     }
 
-    std::vector<std::string> attributes;
+    int n = 0;
     std::string line;
 
     if(std::getline(inputFile, line))
@@ -89,17 +89,18 @@ std::vector<std::vector<std::string>> readInputFile(const std::string& inputFile
         while(iss >> attributeName)
         {
             if(attributeName == "%") break;
-            attributes.push_back(attributeName);        
+            n++;       
         }
     }
 
-    int n = attributes.size();
+    
+    std::vector<NiggaBalls> niggas;
     int r = 0, c = 0;
 
     while(std::getline(inputFile, line))
     {
         std::istringstream iss(line);
-        std::vector<float> valueSet;
+        NiggaBalls niggaBall;
         std::string value;
         while (iss >> value)
         {
@@ -111,7 +112,7 @@ std::vector<std::vector<std::string>> readInputFile(const std::string& inputFile
             }
             if(isNumber(value))
             {
-                valueSet.push_back(std::stof(value));
+                niggaBall.attributes.push_back(std::stof(value));
             }
             else
             {
@@ -125,11 +126,11 @@ std::vector<std::vector<std::string>> readInputFile(const std::string& inputFile
         }
 
         c = 0;
-        attributeValues.push_back(valueSet);
+        niggas.push_back(niggaBall);
     }
 
     inputFile.close();
-    return attributes;
+    return niggas;
 }
 
 std::vector<Definition> readDefinition(const std::string& inputFileName)
@@ -233,7 +234,78 @@ std::vector<Definition> readDefinition(const std::string& inputFileName)
     return nodes;
 }
 
-void runDecisionTree(const std::vector<Definition>& nodes, const)
+void runDecisionTree(const std::vector<Definition>& nodes, std::vector<NiggaBalls>& niggas)
 {
+    for(int i = 0; i < niggas.size(); i++)
+    {
+        int n = 0;
 
+        while(niggas[i].decision.empty())
+        {
+            if(nodes[n].op == '<')
+            {
+                if(niggas[i].attributes[n] < nodes[n].value)
+                {
+                    if(nodes[n].trueIndex == -1)
+                    {
+                        niggas[i].decision = nodes[n].trueLabel;
+                    }
+                    else
+                    {
+                        n = nodes[n].trueIndex;
+                    }
+                }
+                else
+                {
+                    if(nodes[n].falseIndex == -1)
+                    {
+                        niggas[i].decision = nodes[n].falseLabel;
+                    }
+                    else
+                    {
+                        n = nodes[n].falseIndex;
+                    }
+                }
+            }
+            else
+            {
+                if(niggas[i].attributes[n] > nodes[n].value)
+                {
+                    if(nodes[n].trueIndex == -1)
+                    {
+                        niggas[i].decision = nodes[n].trueLabel;
+                    }
+                    else
+                    {
+                        n = nodes[n].trueIndex;
+                    }
+                }
+                else
+                {
+                    if(nodes[n].falseIndex == -1)
+                    {
+                        niggas[i].decision = nodes[n].falseLabel;
+                    }
+                    else
+                    {
+                        n = nodes[n].falseIndex;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void printResults(const std::string& outputFileName, const std::vector<NiggaBalls>& niggas)
+{
+    std::ofstream outputFile(outputFileName);
+
+    for(int i = 0; i < niggas.size(); i++)
+    {
+        for(int j = 0; j < niggas[i].attributes.size(); j++)
+        {
+            outputFile << niggas[i].attributes[j] << ", ";
+        }
+        outputFile << " = "<< niggas[i].decision << "\n";
+    }
 }

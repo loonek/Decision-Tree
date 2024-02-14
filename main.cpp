@@ -10,12 +10,13 @@
 int main(int argc, char **argv) {
     Parameters p = readInput(argc, argv);
 
-    std::vector<std::vector<float>> attributeValues;
-    readInputFile(p.inputFileName, attributeValues);
+    std::vector<NiggaBalls> niggas = readInputFile(p.inputFileName);
 
     std::vector<Definition> nodes = readDefinition(p.definitionFileName);
     
-    runDecisionTree();
+    runDecisionTree(nodes, niggas);
+
+    printResults(p.outputFileName, niggas);
 
     return 0;    
 }

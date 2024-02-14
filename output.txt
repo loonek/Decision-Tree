@@ -1,0 +1,5 @@
+195.9, 40.8,  = basketball
+187.4, 45.5,  = basketball
+197, 51.6,  = athletics
+176.2, 55,  = basketball
+178.6, 49.4,  = basketball

@@ -22,6 +22,12 @@ struct Definition
     int falseIndex;
 };
 
+struct NiggaBalls
+{
+    std::vector<float> attributes;
+    std::string decision;
+};
+
 
 bool isNumber(const std::string& str);
 
@@ -29,9 +35,13 @@ bool isNumber(const std::string& str);
 Parameters readInput(int argc, char *argv[]);
 
 
-void readInputFile(const std::string& inputFileName, std::vector<std::vector<float>>& attributeValues);
+std::vector<NiggaBalls> readInputFile(const std::string& inputFileName);
 
 
 std::vector<Definition> readDefinition(const std::string& inputFileName);
 
-void runDecisionTree();
+
+void runDecisionTree(const std::vector<Definition>& nodes, std::vector<NiggaBalls>& niggas);
+
+
+void printResults(const std::string& outputFileName, const std::vector<NiggaBalls>& niggas);
